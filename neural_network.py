@@ -27,14 +27,14 @@ class neural_network:
         for i in range(1, len(layer_config)):
             self.layers.append(
                 {
-                    "w": np.random.rand(layer_config[i - 1], layer_config[i]) / 5 - 0.1,
+                    "w": np.random.rand(layer_config[i - 1], layer_config[i]),
                     "b": np.ones((1, layer_config[i])),
                 }
             )
 
     def forward(self, batch):
         activations = [batch.copy()]
-        for i in range(1, len(self.layers)):
+        for i in range(0, len(self.layers)):
             batch = batch @ self.layers[i]["w"] + self.layers[i]["b"]
             if i < len(self.layers) - 1:  # Relu activation for hidden layers
                 batch = np.maximum(batch, 0)
@@ -86,9 +86,10 @@ if __name__ == "__main__":
     neural_net = neural_network()
     pred, _ = neural_net.forward(X_normalized)
     print(
-        f"Error before training: {mean_square_error(y, neural_net.forward(X_normalized))}"
+        f"Error before training: {mean_square_error(y, pred)}"
     )
     neural_net.train(X_normalized, y)
+    pred, _ = neural_net.forward(X_normalized)
     print(
-        f"Error after training: {mean_square_error(y, neural_net.forward(X_normalized))}"
+        f"Error after training: {mean_square_error(y, pred)}"
     )
